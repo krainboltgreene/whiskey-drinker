@@ -9,10 +9,7 @@ module Whiskey
         end
 
         def read
-          Whiskey::Drinker.logger.debug("Catching user input")
-          @foo = @input.gets
-          Whiskey::Drinker.logger.debug("User input was: #{@foo}")
-          @foo
+          @input.gets
         end
 
         def write(output)
