@@ -2,6 +2,8 @@ require "celluloid/io"
 require_relative "client/console"
 require_relative "client/request"
 require_relative "client/serializer"
+require_relative "client/reader"
+require_relative "client/writer"
 
 module Whiskey
   module Drinker
@@ -22,25 +24,11 @@ module Whiskey
       private
 
       def read
-        loop do
-          Whiskey::Drinker.logger.debug("read server")
-          response(connection.readpartial(4069))
-          Whiskey::Drinker.logger.debug("stop server")
-        end
+        Reader.new(connection, console).async.watch
       end
 
       def write
-        Whiskey::Drinker.logger.debug("read console")
-        request(console..read)
-        Whiskey::Drinker.logger.debug("stop console")
-      end
-
-      def response(output)
-        console.write(output)
-      end
-
-      def request(input)
-        connection.write(Request.new(input).serialize)
+        Writer.new(connection, console).async.watch
       end
 
       def finalizer(callback)
